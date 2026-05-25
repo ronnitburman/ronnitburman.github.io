@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ronnit Roy Burman — Software & Systems Engineer</title>
+  <meta name="description" content="Software & Systems Engineer bridging hardware and software. 10+ years across IoT, AI, control systems, and full-stack engineering.">
+  <style>
+    /* ── VS Code-like IDE theme ── */
+    :root {
+      --bg: #1e1e2e;
+      --sidebar-bg: #181825;
+      --editor-bg: #1e1e2e;
+      --tab-active: #1e1e2e;
+      --tab-inactive: #181825;
+      --statusbar: #11111b;
+      --text: #cdd6f4;
+      --muted: #6c7086;
+      --accent: #89b4fa;
+      --keyword: #cba6f7;
+      --string: #a6e3a1;
+      --type: #89b4fa;
+      --function: #f9e2af;
+      --number: #fab387;
+      --comment: #6c7086;
+      --line-num: #45475a;
+      --border: #313244;
+      --cursor: #f5e0dc;
+      --selection: rgba(137,180,250,0.15);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'SF Mono', 'Menlo', 'Consolas', monospace;
+      background: var(--bg); color: var(--text); overflow-x: hidden;
+      -webkit-font-smoothing: antialiased; min-height: 100vh; display: flex;
+    }
+    a { color: var(--accent); text-decoration: none; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 230px; min-width: 230px; background: var(--sidebar-bg);
+      border-right: 1px solid var(--border); display: flex; flex-direction: column;
+      font-size: 0.78rem; user-select: none;
+    }
+    .sidebar-header { padding: 0.9rem 1rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.68rem; }
+    .sidebar-file {
+      padding: 0.4rem 1rem; cursor: pointer; color: var(--muted); transition: 0.15s;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .sidebar-file:hover { background: rgba(255,255,255,0.03); color: var(--text); }
+    .sidebar-file.active { background: rgba(137,180,250,0.08); color: var(--accent); }
+    .sidebar-file .icon { font-size: 0.85rem; width: 16px; text-align: center; }
+    .file-ts { color: #89b4fa; } .file-json { color: #f9e2af; } .file-md { color: #a6e3a1; }
+
+    /* ── Main area ── */
+    .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex; background: #11111b; border-bottom: 1px solid var(--border);
+      font-size: 0.75rem; overflow-x: auto;
+    }
+    .tab {
+      padding: 0.55rem 1.2rem; cursor: pointer; color: var(--muted);
+      border-right: 1px solid var(--border); white-space: nowrap;
+      display: flex; align-items: center; gap: 0.4rem; transition: 0.15s;
+    }
+    .tab:hover { background: rgba(255,255,255,0.02); }
+    .tab.active { background: var(--tab-active); color: var(--text); border-bottom: 2px solid var(--accent); margin-bottom: -1px; }
+    .tab .dot { width: 6px; height: 6px; border-radius: 50%; }
+    .dot-ts { background: #89b4fa; } .dot-json { background: #f9e2af; } .dot-md { background: #a6e3a1; }
+
+    /* ── Editor ── */
+    .editor {
+      flex: 1; background: var(--editor-bg); overflow-y: auto;
+      display: flex; font-size: 0.82rem; line-height: 1.65;
+    }
+    .line-numbers {
+      padding: 1rem 0; text-align: right; color: var(--line-num);
+      user-select: none; min-width: 44px; font-size: 0.78rem;
+    }
+    .line-numbers div { padding: 0 0.8rem 0 0.5rem; }
+    .code { padding: 1rem 1.5rem; flex: 1; overflow-x: auto; white-space: nowrap; }
+
+    /* ── Panel (hidden by default) ── */
+    .panel { display: none; }
+
+    /* ── Status Bar ── */
+    .statusbar {
+      background: var(--statusbar); border-top: 1px solid var(--border);
+      padding: 0.3rem 1rem; display: flex; justify-content: space-between;
+      font-size: 0.7rem; color: var(--muted);
+    }
+    .statusbar span { display: flex; align-items: center; gap: 0.3rem; }
+
+    /* ── Syntax Highlighting Helpers ── */
+    .kw { color: var(--keyword); }   /* keywords */
+    .ty { color: var(--type); }      /* types */
+    .fn { color: var(--function); }  /* functions/classes */
+    .st { color: var(--string); }    /* strings */
+    .nu { color: var(--number); }    /* numbers */
+    .cm { color: var(--comment); }   /* comments */
+    .ac { color: var(--accent); }    /* accent */
+    .bracket { color: #f5c2e7; }
+    .punctuation { color: #bac2de; }
+
+    /* ── Cursor animation ── */
+    .cursor-blink {
+      display: inline-block; width: 8px; height: 1.1em; background: var(--cursor);
+      vertical-align: text-bottom; margin-left: 1px;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ── Code content styling ── */
+    .class-line { margin-bottom: 0.15rem; }
+    .indent { padding-left: 1.5rem; }
+    .indent2 { padding-left: 3rem; }
+    .empty-line { height: 0.65rem; }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      .sidebar { display: none; }
+      .tabs { font-size: 0.68rem; }
+      .tab { padding: 0.45rem 0.7rem; }
+      .editor { font-size: 0.7rem; }
+      .code { padding: 0.8rem 0.8rem; }
+    }
+
+    /* ── Subtle particle animation in background ── */
+    .bg-glow {
+      position: fixed; pointer-events: none; z-index: 0;
+      width: 400px; height: 400px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(137,180,250,0.04) 0%, transparent 70%);
+      animation: float 8s ease-in-out infinite;
+    }
+    .bg-glow:nth-child(1) { top: -100px; left: -100px; }
+    .bg-glow:nth-child(2) { bottom: -100px; right: -100px; animation-delay: -4s; }
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -30px) scale(1.05); }
+      66% { transform: translate(-20px, 20px) scale(0.95); }
+    }
+
+    .main-content { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; }
+  </style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+  <div class="bg-glow"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">📁 Portfolio</div>
+    <div class="sidebar-file active" data-tab="resume">
+      <span class="icon file-ts">TS</span> resume.tsx
+    </div>
+    <div class="sidebar-file" data-tab="skills">
+      <span class="icon file-json">{ }</span> skills.json
+    </div>
+    <div class="sidebar-file" data-tab="awards">
+      <span class="icon file-md">MD</span> awards.md
+    </div>
+    <div class="sidebar-file" data-tab="contact">
+      <span class="icon file-ts">TS</span> contact.ts
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="main-content">
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tab active" data-tab="resume">
+          <span class="dot dot-ts"></span> resume.tsx
+        </div>
+        <div class="tab" data-tab="skills">
+          <span class="dot dot-json"></span> skills.json
+        </div>
+        <div class="tab" data-tab="awards">
+          <span class="dot dot-md"></span> awards.md
+        </div>
+        <div class="tab" data-tab="contact">
+          <span class="dot dot-ts"></span> contact.ts
+        </div>
+      </div>
+
+      <!-- Editor -->
+      <div class="editor" id="editor">
+        <div class="line-numbers" id="line-numbers"></div>
+        <div class="code" id="code-content">
+          <!-- TYPEWRITER OUTPUT -->
+          <span id="typewriter"></span><span class="cursor-blink" id="cursor"></span>
+        </div>
+      </div>
+
+      <!-- Status Bar -->
+      <div class="statusbar">
+        <span>🟢 main</span>
+        <span>UTF-8 &nbsp;|&nbsp; TypeScript React &nbsp;|&nbsp; Ln <span id="ln-col">1, 1</span></span>
+        <span>✨ Prettier</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Tab switching ──
+    const tabs = document.querySelectorAll('.tab');
+    const sidebarFiles = document.querySelectorAll('.sidebar-file');
+    const codeContent = document.getElementById('code-content');
+    const lineNumbers = document.getElementById('line-numbers');
+    const lnCol = document.getElementById('ln-col');
+    let activeTab = 'resume';
+
+    // ── Content for each tab ──
+    const content = {
+      resume: `\
+<span class="kw">import</span> { Engineer } <span class="kw">from</span> <span class="st">'hardware-to-cloud'</span>;
+
+<span class="kw">export class</span> <span class="fn">RonnitBurman</span> <span class="kw">extends</span> <span class="ty">Engineer</span> {
+  <span class="cm">// 10+ years bridging hardware and software</span>
+  name = <span class="st">"Ronnit Roy Burman"</span>;
+  title = <span class="st">"Software & Systems Engineer"</span>;
+  location = <span class="st">"Ottawa, ON"</span>;
+  contact = {
+    email: <span class="st">"ronnitburman@gmail.com"</span>,
+    phone: <span class="st">"(437) 988-2357"</span>,
+    linkedin: <span class="st">"linkedin.com/in/ronnitburman"</span>,
+    github: <span class="st">"github.com/ronnitburman"</span>
+  };
+
+  <span class="cm">// Uniquely positioned to bridge hardware-software divide</span>
+  superpowers = [
+    <span class="st">"Software Systems Design"</span>,
+    <span class="st">"Hardware-Software Integration"</span>,
+    <span class="st">"IoT & Control Systems"</span>,
+    <span class="st">"Cross-Stack Engineering"</span>
+  ];
+
+  <span class="kw">async</span> <span class="fn">experience</span>() {
+    <span class="kw">return</span> [
+      {
+        role: <span class="st">"Software Engineer"</span>,
+        company: <span class="st">"Cisco Systems"</span>,
+        period: <span class="st">"Mar 2023 – Present"</span>,
+        highlights: [
+          <span class="st">"Led sustainability rec-sys optimizing PSU utilization"</span>,
+          <span class="st">"Architected network automation for IOS-XE — cut latency 40%"</span>,
+          <span class="st">"Built diagnostic engine for Catalyst 9K security hardening"</span>,
+          <span class="st">"2 invention disclosures — 1 patent filed"</span>
+        ]
+      },
+      {
+        role: <span class="st">"Data Scientist — IoT & Systems Analytics"</span>,
+        company: <span class="st">"Tyco Safety Products"</span>,
+        period: <span class="st">"Jun 2022 – Feb 2023"</span>,
+        highlights: [
+          <span class="st">"Python + PostgreSQL pipelines for real-time edge analytics"</span>,
+          <span class="st">"Analyzed 50GB+ IoT telemetry with Pandas & BigQuery"</span>
+        ]
+      },
+      {
+        role: <span class="st">"Grad TA — Digital Systems Design"</span>,
+        company: <span class="st">"University of Waterloo"</span>,
+        period: <span class="st">"Jan 2022 – Aug 2022"</span>,
+        highlights: [
+          <span class="st">"Arduino, FPGA, digital logic — hardware debugging with scopes"</span>
+        ]
+      },
+      {
+        role: <span class="st">"Controls Systems Engineer"</span>,
+        company: <span class="st">"Johnson Controls, NYC"</span>,
+        period: <span class="st">"Jul 2016 – Sep 2021"</span>,
+        highlights: [
+          <span class="st">"Invented Digital Integration Module (patent filed)"</span>,
+          <span class="st">"R2R bridge architecture — slashed wiring costs 70%"</span>,
+          <span class="st">"100+ peripheral points over single 3-wire cable"</span>,
+          <span class="st">"2 defensive publications"</span>
+        ]
+      }
+    ];
+  }
+
+  <span class="fn">education</span> = [
+    { degree: <span class="st">"M.Eng Systems Design — AI & ML"</span>, school: <span class="st">"UWaterloo"</span>, year: <span class="nu">2022</span> },
+    { degree: <span class="st">"B.Tech Electronics & Instrumentation"</span>, school: <span class="st">"VIT"</span>, year: <span class="nu">2016</span> }
+  ];
+}`,
+
+      skills: `\
+{
+  <span class="st">"languages"</span>: [<span class="st">"Python"</span>, <span class="st">"Bash"</span>, <span class="st">"SQL"</span>],
+  <span class="st">"infra"</span>: [<span class="st">"Docker"</span>, <span class="st">"Kubernetes"</span>, <span class="st">"AWS"</span>, <span class="st">"PostgreSQL"</span>, <span class="st">"CI/CD"</span>, <span class="st">"Git"</span>],
+  <span class="st">"embedded"</span>: [
+    <span class="st">"Linux"</span>, <span class="st">"Arduino"</span>, <span class="st">"Raspberry Pi"</span>,
+    <span class="st">"ESP32"</span>, <span class="st">"ATmega32"</span>, <span class="st">"UART"</span>,
+    <span class="st">"I²C"</span>, <span class="st">"SPI"</span>, <span class="st">"RS-232"</span>, <span class="st">"JTAG"</span>
+  ],
+  <span class="st">"engineering"</span>: [
+    <span class="st">"MATLAB Simulink"</span>, <span class="st">"Cadence"</span>, <span class="st">"P-SIM"</span>,
+    <span class="st">"Schematics"</span>, <span class="st">"ADCs/DACs"</span>, <span class="st">"Remote Debugging"</span>,
+    <span class="st">"Bit Masking"</span>, <span class="st">"IoT Telemetry"</span>
+  ],
+  <span class="st">"_note"</span>: <span class="st">"Bridging hardware registers to cloud containers since 2016."</span>
+}`,
+
+      awards: `\
+<span class="cm">&lt;!-- Leadership & Awards --&gt;</span>
+
+<span class="kw">#</span> 🏆 Founder & Captain — <span class="fn">Hybrid Formula Student Team</span> (<span class="nu">2013–2015</span>)
+
+Led <span class="nu">25</span>-member team to win <span class="st">Best Innovation Challenge</span>.
+Built automatic gear shifter & RPM meter on <span class="ty">Arduino</span>,
+productionized on custom <span class="ty">ATmega32</span> boards with <span class="ty">ESP32</span>.
+Designed control logic, MCP boards, <span class="nu">3D</span>-printed waterproof
+housings, brake lights, safety circuits & wireless charging.
+
+<span class="kw">#</span> 🥇 Winner — <span class="fn">International Hackathon, Uganda</span>
+
+Prototyped mechanical suction system replacing electrical machines
+to save lives during hospital power outages.
+
+<span class="kw">#</span> 🎓 President — <span class="fn">Dept. Graduate Student Association</span>
+
+Systems Design Engineering, University of Waterloo.
+
+<span class="kw">#</span> 🏅 <span class="fn">Dean's Award</span> — Extraordinary Performance
+
+Vellore Institute of Technology.`,
+
+      contact: `\
+<span class="kw">import</span> { connect } <span class="kw">from</span> <span class="st">'@ronnit/inbox'</span>;
+
+<span class="kw">const</span> ronnit = <span class="kw">new</span> <span class="fn">Engineer</span>({
+  email: <span class="st">"ronnitburman@gmail.com"</span>,
+  linkedin: <span class="st">"linkedin.com/in/ronnitburman"</span>,
+  github: <span class="st">"github.com/ronnitburman"</span>,
+  location: <span class="st">"Ottawa, ON"</span>,
+  available: <span class="kw">true</span>
+});
+
+<span class="cm">// Open to: software systems, HW-SW integration, AI/ML</span>
+<span class="cm">// Let's build something that spans the stack.</span>
+
+<span class="kw">await</span> connect(ronnit);
+<span class="cm">// → Response time: &lt; 24h</span>`
+    };
+
+    function switchTab(name) {
+      activeTab = name;
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+      sidebarFiles.forEach(f => f.classList.toggle('active', f.dataset.tab === name));
+
+      // Typewriter effect
+      typewrite(content[name]);
+    }
+
+    tabs.forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+    sidebarFiles.forEach(f => f.addEventListener('click', () => switchTab(f.dataset.tab)));
+
+    // ── Typewriter ──
+    const typewriterEl = document.getElementById('typewriter');
+    const cursorEl = document.getElementById('cursor');
+    let typingTimeout;
+
+    function typewrite(html) {
+      clearTimeout(typingTimeout);
+      typewriterEl.innerHTML = '';
+      cursorEl.style.display = 'inline-block';
+
+      // Strip HTML tags to get plain text, but we want to preserve them
+      // Strategy: build char by char, closing open tags
+      const temp = document.createElement('div');
+      temp.innerHTML = html;
+
+      // Flatten to character queue with tags
+      const queue = [];
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      function walk(node) {
+        if (node.nodeType === 3) {
+          for (const ch of node.textContent) queue.push({ type: 'char', ch });
+        } else if (node.nodeType === 1) {
+          const tag = node.tagName.toLowerCase();
+          if (tag === 'span') {
+            queue.push({ type: 'open', html: node.outerHTML.match(/<span[^>]*>/)[0] });
+            for (const child of node.childNodes) walk(child);
+            queue.push({ type: 'close', html: '</span>' });
+          } else if (tag === 'br') {
+            queue.push({ type: 'char', ch: '\n' });
+          } else {
+            for (const child of node.childNodes) walk(child);
+          }
+        }
+      }
+      for (const child of doc.body.childNodes) walk(child);
+
+      let idx = 0;
+      const speed = 3; // ms per char — peppy!
+      let openTags = [];
+
+      function tick() {
+        if (idx >= queue.length) {
+          cursorEl.style.display = 'inline-block';
+          updateLineNumbers();
+          return;
+        }
+        const item = queue[idx];
+        if (item.type === 'open') {
+          typewriterEl.innerHTML += item.html;
+          openTags.push(item.html);
+          idx++;
+          typingTimeout = setTimeout(tick, 0);
+        } else if (item.type === 'close') {
+          typewriterEl.innerHTML += item.html;
+          openTags.pop();
+          idx++;
+          typingTimeout = setTimeout(tick, 0);
+        } else if (item.type === 'char') {
+          if (item.ch === '\n') {
+            typewriterEl.innerHTML += '<br>';
+          } else {
+            typewriterEl.innerHTML += item.ch;
+          }
+          idx++;
+          updateLineNumbers();
+          typingTimeout = setTimeout(tick, speed);
+        }
+        cursorEl.style.display = 'inline-block';
+      }
+      tick();
+    }
+
+    function updateLineNumbers() {
+      const codeLines = codeContent.innerText.split('\n').length;
+      let html = '';
+      for (let i = 1; i <= codeLines; i++) html += `<div>${i}</div>`;
+      lineNumbers.innerHTML = html;
+
+      // Update status bar
+      const text = typewriterEl.innerText;
+      const lines = text.split('\n');
+      const lastLine = lines[lines.length - 1] || '';
+      lnCol.textContent = `${lines.length}, ${lastLine.length + 1}`;
+    }
+
+    // ── Start ──
+    switchTab('resume');
+
+    // ── Click anywhere to skip animation and reveal all ──
+    document.getElementById('editor').addEventListener('click', function skip(e) {
+      if (e.target === this || e.target === codeContent || e.target === typewriterEl) {
+        clearTimeout(typingTimeout);
+        typewriterEl.innerHTML = content[activeTab];
+        cursorEl.style.display = 'none';
+        updateLineNumbers();
+      }
+    });
+  </script>
+</body>
+</html>

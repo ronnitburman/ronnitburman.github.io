@@ -7,261 +7,293 @@
   <meta name="description" content="Software & Systems Engineer bridging hardware and software. 10+ years across IoT, AI, control systems, and full-stack engineering.">
   <style>
     :root {
-      --bg: #1a1b26; --sidebar-bg: #16161e; --tab-active: #1a1b26;
-      --tab-inactive: #121219; --statusbar: #0f0f16; --border: #2a2b3d;
-      --text: #c0caf5; --muted: #565f89; --line-num: #3b4261;
-      --cursor: #c0caf5;
-      --kw: #bb9af7; --ty: #7aa2f7; --fn: #e0af68;
-      --st: #9ece6a; --nu: #ff9e64; --cm: #565f89;
-      --lit: #73daca; --accent: #7aa2f7;
+      --bg: #0d1117; --card: #161b22; --border: #30363d;
+      --text: #c9d1d9; --muted: #8b949e;
+      --blue: #58a6ff; --green: #3fb950; --purple: #bc8cff;
+      --orange: #d2991d; --red: #f85149;
+      --editor-bg: #0d1117; --line-num: #484f58;
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Menlo', 'Consolas', monospace;
-      background: var(--bg); color: var(--text); display: flex;
-      min-height: 100vh; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+      background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;
     }
-    a { color: var(--accent); text-decoration: none; }
+    a{color:var(--blue);text-decoration:none}
 
-    /* Sidebar */
-    .sidebar {
-      width: 220px; min-width: 220px; background: var(--sidebar-bg);
-      border-right: 1px solid var(--border); display: flex; flex-direction: column;
-      font-size: 0.78rem; user-select: none; padding-top: 0.5rem;
+    /* ── HERO ── */
+    .hero{
+      min-height:100vh;display:flex;align-items:center;justify-content:center;
+      text-align:center;padding:3rem 2rem;position:relative;overflow:hidden;
     }
-    .sidebar-header { padding: 0.7rem 1rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.66rem; }
-    .sidebar-file {
-      padding: 0.45rem 1rem; cursor: pointer; color: var(--muted); transition: 0.15s;
-      display: flex; align-items: center; gap: 0.5rem; border-left: 2px solid transparent;
+    .hero::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse 60% 50% at 50% 40%,rgba(88,166,255,0.06),transparent),
+                 radial-gradient(ellipse 50% 40% at 30% 70%,rgba(188,140,255,0.04),transparent);
+      pointer-events:none;
     }
-    .sidebar-file:hover { background: rgba(255,255,255,0.02); color: var(--text); }
-    .sidebar-file.active { background: rgba(122,162,247,0.06); color: var(--accent); border-left-color: var(--accent); }
-
-    /* Main */
-    .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-
-    /* Tabs */
-    .tabs { display: flex; background: #121219; border-bottom: 1px solid var(--border); font-size: 0.74rem; overflow-x: auto; }
-    .tab {
-      padding: 0.5rem 1.2rem; cursor: pointer; color: var(--muted);
-      border-right: 1px solid var(--border); white-space: nowrap;
-      display: flex; align-items: center; gap: 0.4rem; transition: 0.15s;
+    .hero-content{position:relative;z-index:1;max-width:700px}
+    .hero-badge{
+      display:inline-block;font-size:0.8rem;font-weight:600;color:var(--green);
+      border:1px solid rgba(63,185,80,0.3);border-radius:50px;
+      padding:0.3rem 0.9rem;margin-bottom:1.5rem;letter-spacing:0.02em;
+      background:rgba(63,185,80,0.06);
     }
-    .tab:hover { background: rgba(255,255,255,0.02); }
-    .tab.active { background: var(--tab-active); color: var(--text); border-bottom: 2px solid var(--accent); margin-bottom: -1px; }
-    .tab-dot { width: 6px; height: 6px; border-radius: 50%; }
-    .dot-ts { background: #7aa2f7; } .dot-json { background: #e0af68; } .dot-md { background: #9ece6a; }
-
-    /* Flow hint arrow */
-    .flow-hint {
-      display: flex; align-items: center; justify-content: center;
-      padding: 0.35rem; font-size: 0.7rem; color: var(--accent);
-      background: rgba(122,162,247,0.04); border-bottom: 1px solid var(--border);
-      cursor: pointer; transition: 0.2s; gap: 0.4rem;
+    .hero h1{font-size:clamp(2.4rem,6vw,3.8rem);font-weight:800;letter-spacing:-0.03em;line-height:1.15;margin-bottom:0.6rem}
+    .hero h1 span{background:linear-gradient(135deg,#58a6ff,#bc8cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero .subtitle{font-size:1.15rem;color:var(--muted);margin-bottom:2rem}
+    .hero-stats{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem}
+    .stat{
+      background:var(--card);border:1px solid var(--border);border-radius:12px;
+      padding:1.2rem 1.5rem;min-width:130px;text-align:center;
+      transition:border-color 0.2s,transform 0.2s;
     }
-    .flow-hint:hover { background: rgba(122,162,247,0.08); }
-
-    /* Editor */
-    .editor { flex: 1; display: flex; overflow-y: auto; font-size: 0.82rem; line-height: 1.7; }
-    .line-numbers { padding: 0.9rem 0; text-align: right; color: var(--line-num); user-select: none; min-width: 42px; font-size: 0.76rem; }
-    .line-numbers div { padding: 0 0.6rem 0 0.4rem; }
-    .code { padding: 0.9rem 1.5rem; flex: 1; overflow-x: auto; }
-    .code br { content: ''; display: block; margin-bottom: 0; }
-
-    /* Syntax colors */
-    .kw { color: var(--kw); font-weight: 600; }
-    .ty { color: var(--ty); font-weight: 600; }
-    .fn { color: var(--fn); }
-    .st { color: var(--st); }
-    .nu { color: var(--nu); }
-    .cm { color: var(--cm); font-style: italic; }
-    .lit { color: var(--lit); }
-    .highlight { background: rgba(122,162,247,0.1); padding: 0.1rem 0; border-left: 2px solid var(--accent); padding-left: 0.5rem; margin-left: -0.5rem; display: inline-block; width: 100%; }
-
-    /* Cursor */
-    .cursor {
-      display: inline-block; width: 8px; height: 1.15em; background: var(--cursor);
-      vertical-align: text-bottom; margin-left: 2px;
-      animation: blink 1s step-end infinite;
+    .stat:hover{border-color:var(--blue);transform:translateY(-2px)}
+    .stat-num{font-size:1.6rem;font-weight:800;color:var(--blue);font-family:'JetBrains Mono','Fira Code',monospace;margin-bottom:0.2rem}
+    .stat-label{font-size:0.8rem;color:var(--muted)}
+    .hero-contact{display:flex;gap:1.2rem;justify-content:center;flex-wrap:wrap;font-size:0.9rem;color:var(--muted)}
+    .hero-contact a{color:var(--blue);font-weight:500;transition:color 0.2s}
+    .hero-contact a:hover{color:#79c0ff}
+    .scroll-hint{
+      position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
+      color:var(--muted);font-size:0.8rem;animation:bounce 2s infinite;
+      cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:0.3rem;
     }
-    @keyframes blink { 50% { opacity: 0; } }
+    @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
 
-    /* Status bar */
-    .statusbar {
-      background: var(--statusbar); border-top: 1px solid var(--border);
-      padding: 0.3rem 1rem; display: flex; justify-content: space-between;
-      font-size: 0.68rem; color: var(--muted);
+    /* ── DIVIDER ── */
+    .divider{
+      text-align:center;padding:1rem 2rem 2rem;color:var(--muted);font-size:0.8rem;
+      font-family:'JetBrains Mono','Fira Code',monospace;
     }
+    .divider span{color:var(--green)}
 
-    /* Toast */
-    .toast {
-      position: fixed; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
-      background: var(--accent); color: #1a1b26; padding: 0.5rem 1.2rem;
-      border-radius: 6px; font-size: 0.78rem; font-weight: 600;
-      opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999;
+    /* ── EDITOR SECTION ── */
+    .editor-section{padding:0 1rem 3rem;max-width:1000px;margin:0 auto}
+    .editor-shell{
+      background:var(--card);border:1px solid var(--border);border-radius:12px;
+      overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.3);
     }
-    .toast.show { opacity: 1; }
+    .editor-tabs{
+      display:flex;background:#0d1117;border-bottom:1px solid var(--border);
+      font-size:0.78rem;font-family:'JetBrains Mono','Fira Code',monospace;
+      overflow-x:auto;
+    }
+    .editor-tab{
+      padding:0.55rem 1.2rem;cursor:pointer;color:var(--muted);white-space:nowrap;
+      display:flex;align-items:center;gap:0.5rem;border-right:1px solid var(--border);
+      transition:0.15s;
+    }
+    .editor-tab:hover{background:rgba(255,255,255,0.02)}
+    .editor-tab.active{color:var(--text);border-bottom:2px solid var(--blue);margin-bottom:-1px;background:#161b22}
+    .tab-dot{width:6px;height:6px;border-radius:50%}
+    .dot-ts{background:var(--blue)}.dot-json{background:var(--orange)}.dot-md{background:var(--green)}
 
-    /* Glow */
-    .bg-glow {
-      position: fixed; pointer-events: none; z-index: 0;
-      width: 500px; height: 500px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(122,162,247,0.03) 0%, transparent 70%);
-      animation: float 10s ease-in-out infinite;
+    .editor-body{display:flex;font-size:0.83rem;line-height:1.7;font-family:'JetBrains Mono','Fira Code','SF Mono',monospace;max-height:70vh;overflow-y:auto}
+    .gutter{
+      padding:0.8rem 0;text-align:right;color:var(--line-num);user-select:none;
+      min-width:44px;font-size:0.72rem;background:#0d1117;border-right:1px solid var(--border);
     }
-    .bg-glow:nth-child(1) { top: -150px; left: -150px; }
-    .bg-glow:nth-child(2) { bottom: -150px; right: -150px; animation-delay: -5s; }
-    @keyframes float {
-      0%,100% { transform: translate(0,0) scale(1); }
-      33% { transform: translate(40px,-40px) scale(1.06); }
-      66% { transform: translate(-30px,30px) scale(0.94); }
+    .gutter div{padding:0 0.7rem 0 0.4rem}
+    .code-area{padding:0.8rem 1.2rem;flex:1;overflow-x:auto;white-space:pre;tab-size:2}
+
+    .editor-footer{
+      background:#0d1117;border-top:1px solid var(--border);
+      padding:0.3rem 1rem;display:flex;justify-content:space-between;
+      font-size:0.68rem;color:var(--muted);font-family:'JetBrains Mono','Fira Code',monospace;
     }
 
-    @media (max-width: 768px) {
-      body { flex-direction: column; }
-      .sidebar { display: none; }
-      .code { padding: 0.7rem 0.7rem; }
-      .editor { font-size: 0.7rem; }
+    /* ── Syntax ── */
+    .kw{color:var(--purple);font-weight:600}.ty{color:var(--blue)}
+    .fn{color:var(--orange)}.st{color:var(--green)}.nu{color:var(--orange);font-weight:600}
+    .cm{color:var(--muted);font-style:italic}.punct{color:#c9d1d9}
+    .hl{background:rgba(88,166,255,0.08);border-left:3px solid var(--blue);padding-left:0.8rem;margin-left:-0.8rem;display:inline-block;width:calc(100% + 0.8rem)}
+    .hl2{background:rgba(63,185,80,0.06);border-left:3px solid var(--green);padding-left:0.8rem;margin-left:-0.8rem;display:inline-block;width:calc(100% + 0.8rem)}
+
+    /* Typewriter cursor */
+    .cursor{display:inline-block;width:8px;height:1.15em;background:var(--text);vertical-align:text-bottom;margin-left:2px;animation:blink 1s step-end infinite}
+    @keyframes blink{50%{opacity:0}}
+
+    footer{text-align:center;padding:2rem;color:var(--muted);font-size:0.8rem;border-top:1px solid var(--border)}
+
+    @media(max-width:640px){
+      .hero{padding:5rem 1.2rem 3rem}
+      .hero-stats{gap:0.6rem}.stat{padding:0.9rem 1rem;min-width:100px}
+      .stat-num{font-size:1.3rem}
+      .editor-body{font-size:0.7rem}.code-area{padding:0.6rem}
+      .scroll-hint{display:none}
     }
   </style>
 </head>
 <body>
-  <div class="bg-glow"></div><div class="bg-glow"></div>
 
-  <aside class="sidebar">
-    <div class="sidebar-header">📁 portfolio/</div>
-    <div class="sidebar-file active" data-tab="class">📄 RonnitBurman.tsx</div>
-    <div class="sidebar-file" data-tab="skills">📄 skills.json</div>
-    <div class="sidebar-file" data-tab="awards">📄 awards.md</div>
-    <div class="sidebar-file" data-tab="contact">📄 contact.ts</div>
-  </aside>
-
-  <div class="main">
-    <div class="tabs">
-      <div class="tab active" data-tab="class"><span class="tab-dot dot-ts"></span> RonnitBurman.tsx</div>
-      <div class="tab" data-tab="skills"><span class="tab-dot dot-json"></span> skills.json</div>
-      <div class="tab" data-tab="awards"><span class="tab-dot dot-md"></span> awards.md</div>
-      <div class="tab" data-tab="contact"><span class="tab-dot dot-ts"></span> contact.ts</div>
+  <!-- ═══════════ HERO ═══════════ -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">🟢 Open to opportunities</div>
+      <h1>Ronnit Roy <span>Burman</span></h1>
+      <p class="subtitle">Software &amp; Systems Engineer — bridging hardware and software across the full stack. From circuit boards to cloud infrastructure, 10+ years of cross-stack engineering.</p>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num">10+</div><div class="stat-label">Years</div></div>
+        <div class="stat"><div class="stat-num">4</div><div class="stat-label">Patents &amp; Disclosures</div></div>
+        <div class="stat"><div class="stat-num">40%</div><div class="stat-label">Latency Reduced</div></div>
+        <div class="stat"><div class="stat-num">70%</div><div class="stat-label">Cost Savings</div></div>
+      </div>
+      <div class="hero-contact">
+        <a href="mailto:ronnitburman@gmail.com">ronnitburman@gmail.com</a>
+        <span>·</span>
+        <span>(437) 988-2357</span>
+        <span>·</span>
+        <a href="https://linkedin.com/in/ronnitburman" target="_blank">LinkedIn</a>
+        <span>·</span>
+        <a href="https://github.com/ronnitburman" target="_blank">GitHub</a>
+        <span>·</span>
+        <span>Ottawa, ON</span>
+      </div>
     </div>
-
-    <div class="flow-hint" id="flow-hint" title="Click for next file">
-      <span id="flow-arrow">↓</span> <span id="flow-label">Keep reading — there's more</span>
+    <div class="scroll-hint" onclick="document.getElementById('editor-section').scrollIntoView({behavior:'smooth'})">
+      <span>view source</span>
+      <span>↓</span>
     </div>
+  </section>
 
-    <div class="editor" id="editor">
-      <div class="line-numbers" id="line-numbers"></div>
-      <div class="code" id="code-content"></div>
-    </div>
-
-    <div class="statusbar">
-      <span>🟢 main</span>
-      <span>UTF-8 &nbsp;|&nbsp; Ln <span id="ln-col">1, 1</span></span>
-      <span id="file-type">TypeScript React</span>
-    </div>
+  <!-- ═══════════ DIVIDER ═══════════ -->
+  <div class="divider">
+    <span>┌─</span> source <span>─────────────────────────────</span>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <!-- ═══════════ EDITOR ═══════════ -->
+  <section class="editor-section" id="editor-section">
+    <div class="editor-shell">
+      <div class="editor-tabs">
+        <div class="editor-tab active" data-tab="class"><span class="tab-dot dot-ts"></span> RonnitBurman.tsx</div>
+        <div class="editor-tab" data-tab="skills"><span class="tab-dot dot-json"></span> skills.json</div>
+        <div class="editor-tab" data-tab="awards"><span class="tab-dot dot-md"></span> awards.md</div>
+        <div class="editor-tab" data-tab="contact"><span class="tab-dot dot-ts"></span> contact.ts</div>
+      </div>
+      <div class="editor-body">
+        <div class="gutter" id="gutter"></div>
+        <div class="code-area" id="code-area"><span id="typewriter"></span><span class="cursor" id="cursor"></span></div>
+      </div>
+      <div class="editor-footer">
+        <span>🟢 main</span>
+        <span id="file-type">TypeScript React</span>
+        <span>Ln <span id="ln-col">1, 1</span></span>
+      </div>
+    </div>
+  </section>
+
+  <footer>&copy; 2026 Ronnit Roy Burman</footer>
 
   <script>
-    // ── Content ──
     const tabs = {
       class: {
         label: 'TypeScript React',
-        html: `<span class="kw">import</span> { <span class="ty">Engineer</span> } <span class="kw">from</span> <span class="st">'hardware-to-cloud'</span>;
+        html: `<span class="kw">import</span> { Engineer } <span class="kw">from</span> <span class="st">'hardware-to-cloud'</span>;
 
 <span class="kw">export class</span> <span class="fn">RonnitBurman</span> <span class="kw">extends</span> <span class="ty">Engineer</span> {
-  <span class="cm">// 10+ years — from circuit boards to cloud infrastructure</span>
+  <span class="cm">// 10+ years — circuit boards → cloud infrastructure</span>
 
-  <span class="ty">name</span>    = <span class="st">"Ronnit Roy Burman"</span>;
-  <span class="ty">title</span>   = <span class="st">"Software & Systems Engineer"</span>;
-  <span class="ty">location</span>= <span class="st">"Ottawa, ON"</span>;
+  <span class="ty">name</span>     = <span class="st">"Ronnit Roy Burman"</span>;
+  <span class="ty">title</span>    = <span class="st">"Software & Systems Engineer"</span>;
+  <span class="ty">location</span> = <span class="st">"Ottawa, ON"</span>;
 
-  <span class="ty">contact</span> = {
+  <span class="ty">contact</span>  = <span class="punct">{</span>
     <span class="ty">email</span>:    <a href="mailto:ronnitburman@gmail.com"><span class="st">"ronnitburman@gmail.com"</span></a>,
     <span class="ty">phone</span>:    <span class="st">"(437) 988-2357"</span>,
     <span class="ty">linkedin</span>: <a href="https://linkedin.com/in/ronnitburman" target="_blank"><span class="st">"linkedin.com/in/ronnitburman"</span></a>,
     <span class="ty">github</span>:   <a href="https://github.com/ronnitburman" target="_blank"><span class="st">"github.com/ronnitburman"</span></a>
-  };
+  <span class="punct">}</span>;
 
-  <span class="cm">// Uniquely positioned to bridge the hardware-software divide</span>
-  <span class="ty">superpowers</span> = [
+  <span class="cm">// Core competencies</span>
+  <span class="ty">superpowers</span> = <span class="punct">[</span>
     <span class="st">"Software Systems Design"</span>,
     <span class="st">"Hardware-Software Integration"</span>,
     <span class="st">"IoT & Control Systems"</span>,
     <span class="st">"Cross-Stack Engineering"</span>
-  ];
+  <span class="punct">]</span>;
 
-  <span class="kw">async</span> <span class="fn">experience</span>() {
-    <span class="kw">return</span> [
-      {
+  <span class="kw">async</span> <span class="fn">getExperience</span>() <span class="punct">{</span>
+    <span class="kw">return</span> <span class="punct">[</span>
+      <span class="punct">{</span>
         <span class="ty">role</span>:    <span class="st">"Software Engineer"</span>,
         <span class="ty">company</span>: <span class="st">"Cisco Systems, Ottawa"</span>,
         <span class="ty">period</span>:  <span class="st">"Mar 2023 – Present"</span>,
-        <span class="ty">impact</span>:  [
-          <span class="highlight"><span class="st">"Led sustainability recommender — optimized PSU utilization across enterprise hardware"</span></span>,
-          <span class="st">"Architected network automation for IOS-XE devices — <span class="nu">cut latency 40%</span>"</span>,
-          <span class="st">"Built diagnostic engine for Catalyst 9K security hardening & auto-remediation"</span>,
-          <span class="st">"Authored 2 invention disclosures — <span class="kw">1 patent filed</span>"</span>
-        ]
-      },
-      {
+        <span class="ty">impact</span>:  <span class="punct">[</span>
+          <span class="hl"><span class="st">"Led sustainability recommender — optimized PSU utilization across enterprise hardware"</span></span>,
+          <span class="st">"Architected network automation for IOS-XE — </span><span class="nu">40% latency reduction</span><span class="st">"</span>,
+          <span class="st">"Built diagnostic engine for Catalyst 9K — security hardening & auto-remediation"</span>,
+          <span class="st">"Authored 2 invention disclosures — </span><span class="nu">1 patent filed</span><span class="st">"</span>
+        <span class="punct">]</span>
+      <span class="punct">}</span>,
+      <span class="punct">{</span>
         <span class="ty">role</span>:    <span class="st">"Data Scientist — IoT & Analytics"</span>,
         <span class="ty">company</span>: <span class="st">"Tyco Safety Products, Toronto"</span>,
         <span class="ty">period</span>:  <span class="st">"Jun 2022 – Feb 2023"</span>,
-        <span class="ty">impact</span>:  [
-          <span class="st">"Python + PostgreSQL pipelines for <span class="kw">real-time edge analytics</span>"</span>,
-          <span class="st">"Analyzed <span class="nu">50GB+</span> IoT telemetry with Pandas & BigQuery"</span>
-        ]
-      },
-      {
+        <span class="ty">impact</span>:  <span class="punct">[</span>
+          <span class="st">"Python + PostgreSQL pipelines for </span><span class="nu">real-time edge analytics</span><span class="st">"</span>,
+          <span class="st">"Analyzed </span><span class="nu">50GB+</span><span class="st"> IoT telemetry with Pandas & BigQuery"</span>
+        <span class="punct">]</span>
+      <span class="punct">}</span>,
+      <span class="punct">{</span>
         <span class="ty">role</span>:    <span class="st">"Graduate TA — Digital Systems Design"</span>,
         <span class="ty">company</span>: <span class="st">"University of Waterloo"</span>,
         <span class="ty">period</span>:  <span class="st">"Jan 2022 – Aug 2022"</span>,
-        <span class="ty">impact</span>:  [
-          <span class="st">"Taught Arduino, FPGA, digital logic — hardware debugging with oscilloscopes"</span>
-        ]
-      },
-      {
+        <span class="ty">impact</span>:  <span class="punct">[</span>
+          <span class="st">"Arduino, FPGA, digital logic — hardware debugging with oscilloscopes"</span>
+        <span class="punct">]</span>
+      <span class="punct">}</span>,
+      <span class="punct">{</span>
         <span class="ty">role</span>:    <span class="st">"Controls Systems Engineer"</span>,
         <span class="ty">company</span>: <span class="st">"Johnson Controls, New York"</span>,
         <span class="ty">period</span>:  <span class="st">"Jul 2016 – Sep 2021"</span>,
-        <span class="ty">impact</span>:  [
-          <span class="highlight"><span class="st">"Invented Digital Integration Module — <span class="kw">patent filed</span>"</span></span>,
-          <span class="st">"R2R bridge architecture — <span class="nu">slashed wiring costs 70%</span>"</span>,
-          <span class="st">"<span class="nu">100+</span> peripheral points over a single <span class="nu">3-wire</span> shielded cable"</span>,
+        <span class="ty">impact</span>:  <span class="punct">[</span>
+          <span class="hl2"><span class="st">"Invented Digital Integration Module — </span><span class="nu">patent filed</span><span class="st">"</span></span>,
+          <span class="st">"R2R bridge architecture — </span><span class="nu">slashed wiring costs 70%</span><span class="st">"</span>,
+          <span class="st">"</span><span class="nu">100+</span><span class="st"> peripheral points over a single </span><span class="nu">3-wire</span><span class="st"> shielded cable"</span>,
           <span class="st">"2 additional invention disclosures — defensive publications"</span>
-        ]
-      }
-    ];
-  }
+        <span class="punct">]</span>
+      <span class="punct">}</span>
+    <span class="punct">]</span>;
+  <span class="punct">}</span>
 
-  <span class="ty">education</span> = [
-    { <span class="ty">degree</span>: <span class="st">"M.Eng Systems Design — AI & ML"</span>, <span class="ty">school</span>: <span class="st">"University of Waterloo"</span>, <span class="ty">year</span>: <span class="nu">2022</span> },
-    { <span class="ty">degree</span>: <span class="st">"B.Tech Electronics & Instrumentation"</span>, <span class="ty">school</span>: <span class="st">"VIT"</span>, <span class="ty">year</span>: <span class="nu">2016</span> }
-  ];
-}`
+  <span class="ty">education</span> = <span class="punct">[</span>
+    <span class="punct">{</span> <span class="ty">degree</span>: <span class="st">"M.Eng Systems Design — AI & ML"</span>,
+      <span class="ty">school</span>: <span class="st">"University of Waterloo"</span>,
+      <span class="ty">year</span>:   <span class="nu">2022</span> <span class="punct">}</span>,
+    <span class="punct">{</span> <span class="ty">degree</span>: <span class="st">"B.Tech Electronics & Instrumentation"</span>,
+      <span class="ty">school</span>: <span class="st">"Vellore Institute of Technology"</span>,
+      <span class="ty">year</span>:   <span class="nu">2016</span> <span class="punct">}</span>
+  <span class="punct">]</span>;
+<span class="punct">}</span>`
       },
 
       skills: {
         label: 'JSON',
-        html: `{
-  <span class="ty">"languages"</span>:  [<span class="st">"Python"</span>, <span class="st">"Bash"</span>, <span class="st">"SQL"</span>],
+        html: `<span class="punct">{</span>
+  <span class="ty">"languages"</span><span class="punct">:</span>  <span class="punct">[</span><span class="st">"Python"</span>, <span class="st">"Bash"</span>, <span class="st">"SQL"</span><span class="punct">]</span>,
 
-  <span class="ty">"infra"</span>:      [<span class="st">"Docker"</span>, <span class="st">"Kubernetes"</span>, <span class="st">"AWS"</span>,
-                 <span class="st">"PostgreSQL"</span>, <span class="st">"CI/CD"</span>, <span class="st">"Git"</span>],
+  <span class="ty">"infrastructure"</span><span class="punct">:</span> <span class="punct">[</span>
+    <span class="st">"Docker"</span>, <span class="st">"Kubernetes"</span>, <span class="st">"AWS"</span>,
+    <span class="st">"PostgreSQL"</span>, <span class="st">"CI/CD"</span>, <span class="st">"Git"</span>
+  <span class="punct">]</span>,
 
-  <span class="ty">"embedded"</span>:   [<span class="st">"Linux"</span>, <span class="st">"Arduino"</span>, <span class="st">"Raspberry Pi"</span>,
-                 <span class="st">"ESP32"</span>, <span class="st">"ATmega32"</span>,
-                 <span class="st">"UART"</span>, <span class="st">"I²C"</span>, <span class="st">"SPI"</span>,
-                 <span class="st">"RS-232"</span>, <span class="st">"JTAG"</span>],
+  <span class="ty">"embedded"</span><span class="punct">:</span> <span class="punct">[</span>
+    <span class="st">"Linux"</span>, <span class="st">"Arduino"</span>, <span class="st">"Raspberry Pi"</span>,
+    <span class="st">"ESP32"</span>, <span class="st">"ATmega32"</span>,
+    <span class="st">"UART"</span>, <span class="st">"I²C"</span>, <span class="st">"SPI"</span>,
+    <span class="st">"RS-232"</span>, <span class="st">"JTAG"</span>
+  <span class="punct">]</span>,
 
-  <span class="ty">"engineering"</span>: [<span class="st">"MATLAB Simulink"</span>, <span class="st">"Cadence"</span>,
-                 <span class="st">"P-SIM"</span>, <span class="st">"Schematics"</span>,
-                 <span class="st">"ADCs / DACs"</span>, <span class="st">"Remote Debugging"</span>,
-                 <span class="st">"Bit Masking"</span>, <span class="st">"IoT Telemetry"</span>],
+  <span class="ty">"engineering"</span><span class="punct">:</span> <span class="punct">[</span>
+    <span class="st">"MATLAB Simulink"</span>, <span class="st">"Cadence"</span>,
+    <span class="st">"P-SIM"</span>, <span class="st">"Schematics"</span>,
+    <span class="st">"ADCs / DACs"</span>, <span class="st">"Remote Debugging"</span>,
+    <span class="st">"Bit Masking"</span>, <span class="st">"IoT Telemetry"</span>
+  <span class="punct">]</span>,
 
-  <span class="cm">"_note"</span>: <span class="st">"Hardware registers → cloud containers. Since 2016."</span>
-}`
+  <span class="cm">"_note"</span><span class="punct">:</span> <span class="st">"Hardware registers → cloud containers. Since 2016."</span>
+<span class="punct">}</span>`
       },
 
       awards: {
@@ -271,16 +303,16 @@
 <span class="kw">##</span> <span class="fn">🏆 Founder & Captain — Hybrid Formula Student Team</span> <span class="cm">(2013–2015)</span>
 
 Led <span class="nu">25</span>-member team to win <span class="kw">Best Innovation Challenge</span>.
-Prototyped automatic gear shifter &amp; RPM meter on <span class="ty">Arduino</span>,
-productionized on custom <span class="ty">ATmega32</span> boards with <span class="ty">ESP32</span>.
-Designed control logic, MCP boards, <span class="nu">3D</span>-printed waterproof
-housings, brake lights, safety circuits &amp; wireless charging —
-<span class="highlight">years ahead of mainstream EV adoption.</span>
+Built automatic gear shifter &amp; RPM meter on <span class="ty">Arduino</span>,
+productionized on custom <span class="ty">ATmega32</span> + <span class="ty">ESP32</span>.
+Designed MCP boards, control logic, <span class="nu">3D</span>-printed housings,
+brake lights, safety circuits &amp; wireless charging —
+<span class="hl2">years ahead of mainstream EV adoption.</span>
 
 <span class="kw">##</span> <span class="fn">🥇 Winner — International Hackathon, Uganda</span>
 
 Prototyped mechanical suction system replacing electrical
-machines to <span class="kw">save lives</span> during hospital power outages.
+machines — <span class="kw">saving lives</span> during hospital power outages.
 
 <span class="kw">##</span> <span class="fn">🎓 President — Graduate Student Association</span>
 
@@ -291,15 +323,15 @@ Systems Design Engineering, University of Waterloo.
 
       contact: {
         label: 'TypeScript',
-        html: `<span class="kw">import</span> { <span class="ty">connect</span> } <span class="kw">from</span> <span class="st">'@ronnit/inbox'</span>;
+        html: `<span class="kw">import</span> <span class="punct">{</span> <span class="ty">connect</span> <span class="punct">}</span> <span class="kw">from</span> <span class="st">'@ronnit/inbox'</span>;
 
-<span class="kw">const</span> <span class="fn">ronnit</span> = <span class="kw">new</span> <span class="ty">Engineer</span>({
+<span class="kw">const</span> <span class="fn">ronnit</span> = <span class="kw">new</span> <span class="ty">Engineer</span>(<span class="punct">{</span>
   <span class="ty">email</span>:     <a href="mailto:ronnitburman@gmail.com"><span class="st">"ronnitburman@gmail.com"</span></a>,
   <span class="ty">linkedin</span>:  <a href="https://linkedin.com/in/ronnitburman" target="_blank"><span class="st">"linkedin.com/in/ronnitburman"</span></a>,
   <span class="ty">github</span>:    <a href="https://github.com/ronnitburman" target="_blank"><span class="st">"github.com/ronnitburman"</span></a>,
   <span class="ty">location</span>:  <span class="st">"Ottawa, ON"</span>,
   <span class="ty">available</span>: <span class="kw">true</span>
-});
+<span class="punct">}</span>);
 
 <span class="cm">// Open to: software systems, HW-SW integration, AI/ML</span>
 <span class="cm">// Let's build something that spans the stack.</span>
@@ -309,137 +341,85 @@ Systems Design Engineering, University of Waterloo.
       }
     };
 
-    const tabOrder = ['class', 'skills', 'awards', 'contact'];
-    let activeTab = 'class';
-    let typingTimer = null;
-    let skipRequested = false;
+    const tabOrder = ['class','skills','awards','contact'];
+    let activeTab = 'class', typingTimer = null, skipRequested = false;
 
-    const codeEl = document.getElementById('code-content');
-    const lineNums = document.getElementById('line-numbers');
+    const codeArea = document.getElementById('code-area');
+    const typewriterEl = document.getElementById('typewriter');
+    const cursorEl = document.getElementById('cursor');
+    const gutter = document.getElementById('gutter');
     const lnCol = document.getElementById('ln-col');
     const fileType = document.getElementById('file-type');
-    const flowHint = document.getElementById('flow-hint');
-    const flowArrow = document.getElementById('flow-arrow');
-    const flowLabel = document.getElementById('flow-label');
-    const toast = document.getElementById('toast');
-    const editor = document.getElementById('editor');
 
     function updateLines() {
-      const lines = (codeEl.innerText.match(/\n/g) || []).length + 1;
+      const text = typewriterEl.innerText || '';
+      const lines = text.split('\n').length;
       let h = '';
       for (let i = 1; i <= Math.max(lines, 1); i++) h += `<div>${i}</div>`;
-      lineNums.innerHTML = h;
-      const t = codeEl.innerText;
-      const last = t.lastIndexOf('\n');
-      const col = last === -1 ? t.length + 1 : t.length - last;
+      gutter.innerHTML = h;
+      const lastNewline = text.lastIndexOf('\n');
+      const col = lastNewline === -1 ? text.length + 1 : text.length - lastNewline;
       lnCol.textContent = `${lines}, ${col}`;
-    }
-
-    function showToast(msg) {
-      toast.textContent = msg; toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 1800);
-    }
-
-    function updateFlowHint() {
-      const idx = tabOrder.indexOf(activeTab);
-      if (idx < tabOrder.length - 1) {
-        const next = tabs[tabOrder[idx + 1]];
-        flowLabel.textContent = `Next: ${next.label}`;
-        flowArrow.textContent = '→';
-        flowHint.style.display = 'flex';
-      } else {
-        flowLabel.textContent = 'You reached the end 👋';
-        flowArrow.textContent = '✓';
-        flowHint.style.display = 'flex';
-      }
     }
 
     function typewrite(html) {
       clearTimeout(typingTimer);
       skipRequested = false;
-      codeEl.innerHTML = '';
+      typewriterEl.innerHTML = '';
+      cursorEl.style.display = 'inline-block';
       updateLines();
 
-      // Tokenize: split into atoms — either a full HTML tag+content or a single char
       const atoms = [];
       const regex = /(<[^>]+>[^<]*<\/[^>]+>)|(<[^>]+>)|([^<])/g;
       let m;
       while ((m = regex.exec(html)) !== null) {
-        if (m[1]) atoms.push({ t: 'fulltag', h: m[1] });       // <span>text</span> or <a>text</a>
-        else if (m[2]) atoms.push({ t: 'tag', h: m[2] });     // <br> or standalone
-        else atoms.push({ t: 'char', h: m[3] });               // single char
+        if (m[1]) atoms.push(m[1]);
+        else if (m[2]) atoms.push(m[2]);
+        else atoms.push(m[3]);
       }
 
       let i = 0;
-      const speed = 2; // ms per atom — peppy
-      const fastSpeed = 0.3;
-
       function tick() {
         if (skipRequested) {
-          codeEl.innerHTML = html;
+          typewriterEl.innerHTML = html;
+          cursorEl.style.display = 'none';
           updateLines();
           return;
         }
         if (i >= atoms.length) {
+          cursorEl.style.display = 'inline-block';
           updateLines();
-          showToast('✓ Click → or pick a file');
           return;
         }
-        const a = atoms[i];
-        if (a.t === 'fulltag') {
-          // Render the full tag atomically so colors appear instantly
-          codeEl.innerHTML += a.h;
-        } else if (a.t === 'tag') {
-          codeEl.innerHTML += a.h;
-        } else {
-          codeEl.innerHTML += a.h;
-        }
+        typewriterEl.innerHTML += atoms[i];
         i++;
         updateLines();
-        const sp = (a.t === 'char' && a.h === '\n') ? fastSpeed : speed;
-        typingTimer = setTimeout(tick, sp);
+        typingTimer = setTimeout(tick, atoms[i-1] === '\n' ? 0 : 4);
       }
       tick();
     }
 
     function switchTab(name) {
       activeTab = name;
-      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
-      document.querySelectorAll('.sidebar-file').forEach(f => f.classList.toggle('active', f.dataset.tab === name));
+      document.querySelectorAll('.editor-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
       fileType.textContent = tabs[name].label;
-      updateFlowHint();
       typewrite(tabs[name].html);
     }
 
-    // Click handlers
-    document.querySelectorAll('.tab').forEach(t =>
+    document.querySelectorAll('.editor-tab').forEach(t =>
       t.addEventListener('click', () => switchTab(t.dataset.tab)));
-    document.querySelectorAll('.sidebar-file').forEach(f =>
-      f.addEventListener('click', () => switchTab(f.dataset.tab)));
 
-    // Flow hint — go to next file
-    flowHint.addEventListener('click', () => {
-      const idx = tabOrder.indexOf(activeTab);
-      if (idx < tabOrder.length - 1) {
-        switchTab(tabOrder[idx + 1]);
-      } else {
-        switchTab(tabOrder[0]); // loop back
+    // Click code area to skip
+    codeArea.addEventListener('click', () => {
+      if (!skipRequested) {
+        skipRequested = true;
+        clearTimeout(typingTimer);
+        typewriterEl.innerHTML = tabs[activeTab].html;
+        cursorEl.style.display = 'none';
+        updateLines();
       }
     });
 
-    // Click editor to skip animation
-    editor.addEventListener('click', (e) => {
-      if (e.target === editor || e.target === codeEl || e.target.classList.contains('code')) {
-        if (!skipRequested) {
-          skipRequested = true;
-          clearTimeout(typingTimer);
-          codeEl.innerHTML = tabs[activeTab].html;
-          updateLines();
-        }
-      }
-    });
-
-    // Start
     switchTab('class');
   </script>
 </body>

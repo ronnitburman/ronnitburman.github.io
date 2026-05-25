@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ronnit Roy Burman — Chat my Resume</title>
-  <meta name="description" content="Chat with Ronnit Burman's resume. Software & Systems Engineer — 10+ years hardware-to-cloud.">
+  <meta name="description" content="Chat with Ronnit Burman's AI-powered resume. Software & Systems Engineer — 10+ years hardware-to-cloud.">
   <style>
     :root {
       --bg: #17181c; --sidebar-bg: #1a1b20; --user-bubble: #2a2b30;
@@ -22,7 +22,6 @@
     }
     a{color:var(--accent);text-decoration:none}
 
-    /* ── Sidebar ── */
     .sidebar{
       width:260px;min-width:260px;background:var(--sidebar-bg);
       border-right:1px solid var(--border);display:flex;flex-direction:column;
@@ -34,32 +33,33 @@
     .sidebar-stats{display:flex;flex-direction:column;gap:0.4rem}
     .sidebar-stat{font-size:0.8rem;color:var(--muted)}
     .sidebar-stat b{color:var(--accent)}
-    .sidebar-links{display:flex;flex-direction:column;gap:0.3rem;font-size:0.82rem}
+    .sidebar-links{display:flex;flex-direction:column;gap:0.3rem;font-size:0.82rem;margin-top:auto}
     .sidebar-links a{color:var(--muted);transition:color 0.2s}
     .sidebar-links a:hover{color:var(--text)}
 
-    /* ── Main Chat ── */
     .main{flex:1;display:flex;flex-direction:column;min-width:0}
 
-    /* Header */
     .chat-header{
-      padding:0.7rem 1.2rem;border-bottom:1px solid var(--border);
-      display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;font-weight:600;
+      padding:0.6rem 1.2rem;border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
       background:var(--sidebar-bg);
     }
+    .chat-header-left{display:flex;align-items:center;gap:0.6rem;font-size:0.85rem;font-weight:600}
     .online-dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+    .mode-toggle{
+      display:flex;border-radius:8px;overflow:hidden;border:1px solid var(--border);font-size:0.75rem;
+    }
+    .mode-btn{
+      padding:0.35rem 0.8rem;cursor:pointer;background:transparent;color:var(--muted);
+      border:none;transition:0.2s;font-weight:500;
+    }
+    .mode-btn.active{background:var(--accent);color:#fff}
+    .mode-btn:hover:not(.active){color:var(--text)}
 
-    /* Messages */
-    .messages{
-      flex:1;overflow-y:auto;padding:1.5rem;
-      display:flex;flex-direction:column;gap:1.2rem;
-    }
-    .msg{display:flex;gap:0.8rem;max-width:720px;animation:fadeIn 0.3s ease}
+    .messages{flex:1;overflow-y:auto;padding:1.2rem 1.5rem;display:flex;flex-direction:column;gap:1rem}
+    .msg{display:flex;gap:0.7rem;max-width:720px;animation:fadeIn 0.3s ease}
     @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-    .msg-avatar{
-      width:30px;height:30px;border-radius:6px;display:flex;align-items:center;
-      justify-content:center;font-size:0.85rem;flex-shrink:0;
-    }
+    .msg-avatar{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0}
     .msg-assistant .msg-avatar{background:rgba(108,140,255,0.15);color:var(--accent)}
     .msg-user .msg-avatar{background:rgba(240,160,96,0.15);color:var(--orange)}
     .msg-body{flex:1;line-height:1.65;font-size:0.9rem}
@@ -68,28 +68,21 @@
     .msg-body h3{font-size:0.95rem;font-weight:700;margin:0.8rem 0 0.3rem;color:var(--accent)}
     .msg-body h3:first-child{margin-top:0}
     .msg-body ul{margin:0.3rem 0 0.3rem 1.2rem;color:var(--muted)}
-    .msg-body ul li{margin-bottom:0.2rem}
-    .msg-body .highlight{color:var(--green);font-weight:600}
-    .msg-body .metric{color:var(--orange);font-weight:700}
-    .msg-body .tag{
-      display:inline-block;font-size:0.78rem;padding:0.15rem 0.6rem;border-radius:4px;
-      margin:0.15rem 0.3rem 0.15rem 0;border:1px solid;
-    }
+    .msg-body li{margin-bottom:0.2rem}
+    .highlight{color:var(--green);font-weight:600}
+    .metric{color:var(--orange);font-weight:700}
+    .tag{display:inline-block;font-size:0.78rem;padding:0.15rem 0.6rem;border-radius:4px;margin:0.15rem 0.3rem 0.15rem 0;border:1px solid}
     .tag-blue{color:var(--accent);border-color:rgba(108,140,255,0.3);background:rgba(108,140,255,0.06)}
     .tag-green{color:var(--green);border-color:rgba(76,175,147,0.3);background:rgba(76,175,147,0.06)}
     .tag-purple{color:var(--purple);border-color:rgba(184,159,255,0.3);background:rgba(184,159,255,0.06)}
 
-    .typing-indicator{display:flex;gap:4px;padding:0.3rem 0}
-    .typing-indicator span{width:6px;height:6px;border-radius:50%;background:var(--subtle);animation:typing 1.4s infinite}
-    .typing-indicator span:nth-child(2){animation-delay:0.2s}
-    .typing-indicator span:nth-child(3){animation-delay:0.4s}
-    @keyframes typing{0%,60%,100%{opacity:0.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
+    .typing{display:flex;gap:4px;padding:0.3rem 0}
+    .typing span{width:6px;height:6px;border-radius:50%;background:var(--subtle);animation:typingBounce 1.4s infinite}
+    .typing span:nth-child(2){animation-delay:0.2s}
+    .typing span:nth-child(3){animation-delay:0.4s}
+    @keyframes typingBounce{0%,60%,100%{opacity:0.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
 
-    /* Prompt chips */
-    .prompts{
-      padding:0.8rem 1.5rem 1rem;border-top:1px solid var(--border);
-      display:flex;gap:0.5rem;flex-wrap:wrap;
-    }
+    .prompts{padding:0.6rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:0.5rem;flex-wrap:wrap}
     .prompt-chip{
       font-size:0.8rem;padding:0.45rem 0.9rem;border-radius:20px;
       border:1px solid var(--border);background:transparent;color:var(--muted);
@@ -98,9 +91,7 @@
     .prompt-chip:hover{border-color:var(--accent);color:var(--text);background:rgba(108,140,255,0.04)}
     .prompt-chip.active{border-color:var(--accent);color:var(--accent);background:rgba(108,140,255,0.08)}
 
-    .input-row{
-      padding:0.5rem 1.5rem 1rem;display:flex;gap:0.6rem;
-    }
+    .input-row{padding:0.5rem 1.5rem 1rem;display:flex;gap:0.6rem}
     .msg-input{
       flex:1;padding:0.7rem 1rem;border-radius:10px;border:1px solid var(--border);
       background:var(--sidebar-bg);color:var(--text);font-size:0.85rem;
@@ -114,17 +105,32 @@
       font-size:0.85rem;transition:0.2s;
     }
     .send-btn:hover{opacity:0.88}
+    .send-btn:disabled{opacity:0.4;cursor:default}
+
+    .key-modal{
+      position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;
+      align-items:center;justify-content:center;z-index:999;
+    }
+    .key-modal-box{
+      background:var(--sidebar-bg);border:1px solid var(--border);border-radius:16px;
+      padding:2rem;max-width:440px;width:90%;
+    }
+    .key-modal-box h3{margin-bottom:0.5rem}
+    .key-modal-box p{color:var(--muted);font-size:0.85rem;margin-bottom:1rem;line-height:1.5}
+    .key-modal-box input{
+      width:100%;padding:0.7rem;border-radius:8px;border:1px solid var(--border);
+      background:var(--bg);color:var(--text);font-size:0.85rem;margin-bottom:0.8rem;
+    }
+    .key-modal-box a{color:var(--accent);font-size:0.8rem}
 
     @media(max-width:700px){
       .sidebar{display:none}
       .messages{padding:1rem}
-      .msg-body{font-size:0.85rem}
     }
   </style>
 </head>
 <body>
 
-  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-name">Ronnit <span>Burman</span></div>
     <div class="sidebar-bio">Software &amp; Systems Engineer<br>Hardware → Cloud · 10+ yrs</div>
@@ -142,27 +148,41 @@
     </div>
   </aside>
 
-  <!-- Chat -->
   <div class="main">
     <div class="chat-header">
-      <span class="online-dot"></span> Ronnit's Resume <span style="color:var(--subtle);font-weight:400">— online</span>
+      <div class="chat-header-left">
+        <span class="online-dot"></span> <span id="header-title">Ronnit's Resume</span>
+        <span style="color:var(--subtle);font-weight:400">— online</span>
+      </div>
+      <div class="mode-toggle">
+        <button class="mode-btn active" data-mode="guided">📋 Guided</button>
+        <button class="mode-btn" data-mode="ai">🤖 AI Chat</button>
+      </div>
     </div>
 
-    <div class="messages" id="messages">
-      <!-- Dynamic content -->
-    </div>
+    <div class="messages" id="messages"></div>
 
     <div class="prompts" id="prompts">
       <button class="prompt-chip active" data-prompt="overview">👋 Overview</button>
-      <button class="prompt-chip" data-prompt="cisco">🔧 Cisco Experience</button>
+      <button class="prompt-chip" data-prompt="cisco">🔧 Cisco</button>
       <button class="prompt-chip" data-prompt="skills">🛠 Skills</button>
       <button class="prompt-chip" data-prompt="awards">🏆 Awards</button>
       <button class="prompt-chip" data-prompt="contact">📬 Contact</button>
     </div>
 
     <div class="input-row">
-      <input class="msg-input" id="msgInput" placeholder="Ask about my experience, skills, or projects..." onkeydown="if(event.key==='Enter')sendMsg()">
-      <button class="send-btn" onclick="sendMsg()">Send</button>
+      <input class="msg-input" id="msgInput" placeholder="Ask about my experience, skills, or anything..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}">
+      <button class="send-btn" id="sendBtn" onclick="sendMsg()">Send</button>
+    </div>
+  </div>
+
+  <div class="key-modal" id="keyModal" style="display:none">
+    <div class="key-modal-box">
+      <h3>🔑 Groq API Key</h3>
+      <p>To power the AI chat, enter a free Groq API key. <a href="https://console.groq.com/keys" target="_blank">Get one here →</a> (free tier is generous). Your key stays in your browser's localStorage.</p>
+      <input type="password" id="apiKeyInput" placeholder="gsk_...">
+      <button class="send-btn" onclick="saveKey()" style="width:100%">Save & Start Chatting</button>
+      <button style="width:100%;margin-top:0.5rem;padding:0.6rem;border:1px solid var(--border);border-radius:10px;background:transparent;color:var(--muted);cursor:pointer;font-size:0.85rem" onclick="document.getElementById('keyModal').style.display='none';switchMode('guided')">Skip — use guided mode</button>
     </div>
   </div>
 
@@ -170,134 +190,83 @@
     const messages = document.getElementById('messages');
     const promptsEl = document.getElementById('prompts');
     const msgInput = document.getElementById('msgInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const headerTitle = document.getElementById('header-title');
+    const keyModal = document.getElementById('keyModal');
+    let currentMode = 'guided';
+    let groqKey = localStorage.getItem('groq_key') || '';
 
+    const RESUME = `You are Ronnit Roy Burman's resume chatbot. You respond in first person as Ronnit. Be concise, warm, professional. Use the following facts:
+
+NAME: Ronnit Roy Burman
+TITLE: Software & Systems Engineer — Hardware-to-Software Integration
+LOCATION: Ottawa, ON, Canada
+CONTACT: ronnitburman@gmail.com | (437) 988-2357 | linkedin.com/in/ronnitburman | github.com/ronnitburman
+EXPERIENCE: 10+ years from hardware to cloud.
+
+CURRENT ROLE (Mar 2023–Present): Software Engineer at Cisco Systems, Ottawa.
+- Led sustainability recommendation system optimizing PSU utilization across enterprise hardware.
+- Architected network automation for IOS-XE devices — cut latency 40%.
+- Built diagnostic & remediation engine for Catalyst 9K switches — auto security hardening.
+- 2 invention disclosures: 1 patent filed, 1 defensive publication.
+
+PREVIOUS: Data Scientist IoT & Analytics at Tyco Safety Products, Toronto (Jun 2022–Feb 2023).
+- Built Python+PostgreSQL pipelines for real-time edge analytics on IoT telemetry.
+- Analyzed 50GB+ datasets with Pandas and Google BigQuery.
+
+PREVIOUS: Graduate TA — Digital Systems Design at University of Waterloo (Jan–Aug 2022).
+- Taught Arduino prototyping, FPGA programming, digital logic circuits.
+
+PREVIOUS: Controls Systems Engineer at Johnson Controls, New York (Jul 2016–Sep 2021).
+- Invented Digital Integration Module (patent filed) — R2R bridge architecture, manufactured in Taiwan.
+- Slashed field wiring costs by 70%.
+- 100+ peripheral points over single 3-wire shielded cable.
+- 2 additional defensive publications.
+
+EDUCATION:
+- M.Eng Systems Design Engineering — AI & ML, University of Waterloo (2022).
+- B.Tech Electronics & Instrumentation, Vellore Institute of Technology (2016).
+
+SKILLS: Python, Bash, SQL, Docker, Kubernetes, AWS, PostgreSQL, CI/CD, Git, Linux, Arduino, Raspberry Pi, ESP32, ATmega32, UART, I²C, SPI, RS-232, JTAG, MATLAB Simulink, Cadence, P-SIM, Schematics, ADCs/DACs, Remote Debugging, Bit Masking, IoT Telemetry.
+
+AWARDS:
+- Founder & Captain, Hybrid Formula Student Team (2013–2015): Led 25-member team, won Best Innovation Challenge. Built auto gear shifter, RPM meter, custom ATmega32 boards, 3D-printed housings, wireless charging — ahead of EV adoption.
+- Winner, International Hackathon Uganda: Prototyped mechanical suction system saving lives during hospital power outages.
+- President, Graduate Student Association, SYDE, UWaterloo.
+- Dean's Award — Extraordinary Performance, VIT.
+
+SUPERPOWERS: Software Systems Design, Hardware-Software Integration, IoT & Control Systems, Cross-Stack Engineering.
+
+If asked about something not in the resume, say you'd be happy to discuss it over email and provide the contact info. Keep answers under 3 paragraphs unless asked for detail.`;
+
+    // ── Guided responses ──
     const responses = {
-      overview: {
-        text: `<h3>👋 Hi, I'm Ronnit's resume!</h3>
-<p>I'm a <span class="highlight">Software & Systems Engineer</span> with <span class="metric">10+ years</span> of experience spanning the full stack — from circuit boards to cloud infrastructure.</p>
-<p>I bridge hardware and software: IoT telemetry, control systems, network automation, and AI/ML pipelines.</p>
-<p>Currently at <span class="highlight">Cisco Systems</span> in Ottawa. Previously at Tyco, Johnson Controls, and a TA at UWaterloo.</p>
-<p><span class="metric">4 invention disclosures</span> (1 patent filed), <span class="metric">40% latency reductions</span>, <span class="metric">70% cost savings</span> on field wiring.</p>
-<p>Click a prompt below or type a question to learn more! 👇</p>`
-      },
-      cisco: {
-        text: `<h3>🔧 Cisco Systems — Software Engineer</h3>
-<p><span class="metric">Mar 2023 – Present</span> · Ottawa, ON</p>
-<ul>
-  <li><span class="highlight">Sustainability recommender system</span> — optimized PSU utilization & rewarded higher power factor ratings across enterprise hardware</li>
-  <li>Architected <span class="highlight">network automation software</span> interacting directly with IOS-XE devices — <span class="metric">cut latency by 40%</span></li>
-  <li>Built <span class="highlight">diagnostic & remediation engine</span> for Catalyst 9K switches — identifies hardening gaps and auto-remediates security vulnerabilities</li>
-  <li>Full-cycle support: requirements → testing → low-level troubleshooting → mentoring</li>
-  <li><span class="metric">2 invention disclosures</span> — one approved for patent filing, one defensive publication</li>
-</ul>`
-      },
-      tyco: {
-        text: `<h3>📊 Tyco Safety Products — Data Scientist, IoT & Analytics</h3>
-<p><span class="metric">Jun 2022 – Feb 2023</span> · Toronto, ON</p>
-<ul>
-  <li>Built <span class="highlight">Python + PostgreSQL</span> data pipelines for real-time edge analytics on IoT telemetry from field sensors</li>
-  <li>Analyzed <span class="metric">50GB+</span> system-level datasets with Pandas & Google BigQuery</li>
-  <li>Developed reusable modules mapping physical device states → applications</li>
-</ul>`
-      },
-      johnson: {
-        text: `<h3>⚡ Johnson Controls — Controls Systems Engineer</h3>
-<p><span class="metric">Jul 2016 – Sep 2021</span> · New York, USA</p>
-<ul>
-  <li><span class="highlight">Invented Digital Integration Module</span> — <span class="metric">patent filed</span>. R2R bridge architecture designed from scratch, manufactured in Taiwan</li>
-  <li><span class="metric">Slashed field wiring costs by 70%</span></li>
-  <li>Decentralized wiring: <span class="metric">100+ peripheral points</span> over a single <span class="metric">3-wire shielded cable</span></li>
-  <li>Forward-deployed with customers — translated ambiguous requirements into reliable integration strategies</li>
-  <li>2 additional invention disclosures — defensive publications</li>
-</ul>`
-      },
-      skills: {
-        text: `<h3>🛠 Skills & Technologies</h3>
-<p>
-  <span class="tag tag-blue">Python</span><span class="tag tag-blue">Bash</span><span class="tag tag-blue">SQL</span>
-  <span class="tag tag-green">Docker</span><span class="tag tag-green">Kubernetes</span><span class="tag tag-green">AWS</span><span class="tag tag-green">PostgreSQL</span><span class="tag tag-green">CI/CD</span><span class="tag tag-green">Git</span>
-  <span class="tag tag-purple">Linux</span><span class="tag tag-purple">Arduino</span><span class="tag tag-purple">Raspberry Pi</span><span class="tag tag-purple">ESP32</span><span class="tag tag-purple">ATmega32</span>
-  <span class="tag tag-green">UART</span><span class="tag tag-green">I²C</span><span class="tag tag-green">SPI</span><span class="tag tag-green">RS-232</span><span class="tag tag-green">JTAG</span>
-  <span class="tag tag-blue">MATLAB Simulink</span><span class="tag tag-blue">Cadence</span><span class="tag tag-blue">P-SIM</span><span class="tag tag-blue">Schematics</span>
-  <span class="tag tag-purple">Remote Debugging</span><span class="tag tag-purple">Bit Masking</span><span class="tag tag-purple">IoT Telemetry</span>
-</p>
-<p style="margin-top:0.8rem;color:var(--muted)"><span class="highlight">Hardware registers → cloud containers.</span> Since 2016.</p>`
-      },
-      education: {
-        text: `<h3>🎓 Education</h3>
-<ul>
-  <li><span class="highlight">M.Eng, Systems Design Engineering — AI & ML</span><br><span style="color:var(--subtle)">University of Waterloo, 2022</span></li>
-  <li style="margin-top:0.4rem"><span class="highlight">B.Tech, Electronics & Instrumentation</span><br><span style="color:var(--subtle)">Vellore Institute of Technology, 2016</span></li>
-</ul>`
-      },
-      awards: {
-        text: `<h3>🏆 Leadership & Awards</h3>
-<ul>
-  <li><span class="highlight">Founder & Captain — Hybrid Formula Student Team</span> (2013–15)<br>
-  <span style="color:var(--muted)">Led 25-member team to win Best Innovation Challenge. Built auto gear shifter, RPM meter, MCP boards, 3D-printed housings — ahead of EV adoption.</span></li>
-  <li style="margin-top:0.5rem"><span class="highlight">Winner — International Hackathon, Uganda</span><br>
-  <span style="color:var(--muted)">Prototyped mechanical suction system saving lives during hospital power outages.</span></li>
-  <li style="margin-top:0.5rem"><span class="highlight">President — Graduate Student Association</span>, SYDE, UWaterloo</li>
-  <li style="margin-top:0.5rem"><span class="highlight">Dean's Award</span> — Extraordinary Performance, VIT</li>
-</ul>`
-      },
-      contact: {
-        text: `<h3>📬 Let's Connect</h3>
-<p>I'm open to opportunities in <span class="highlight">software systems</span>, <span class="highlight">hardware-software integration</span>, and <span class="highlight">AI/ML engineering</span>.</p>
-<p style="margin-top:0.5rem">📧 <a href="mailto:ronnitburman@gmail.com">ronnitburman@gmail.com</a><br>
-📞 (437) 988-2357<br>
-🔗 <a href="https://linkedin.com/in/ronnitburman" target="_blank">linkedin.com/in/ronnitburman</a><br>
-💻 <a href="https://github.com/ronnitburman" target="_blank">github.com/ronnitburman</a></p>`
-      }
+      overview: `<h3>👋 Hi, I'm Ronnit's resume!</h3><p>I'm a <span class="highlight">Software & Systems Engineer</span> with <span class="metric">10+ years</span> of experience spanning circuit boards to cloud infrastructure.</p><p>I bridge hardware and software: IoT telemetry, control systems, network automation, and AI/ML pipelines.</p><p>Currently at <span class="highlight">Cisco Systems</span> in Ottawa. <span class="metric">4 invention disclosures</span> (1 patent filed), <span class="metric">40% latency reduction</span>, <span class="metric">70% cost savings</span> on field wiring.</p><p>Click a prompt or switch to <span class="highlight">🤖 AI Chat</span> to ask me anything!</p>`,
+      cisco: `<h3>🔧 Cisco Systems — Software Engineer</h3><p><span class="metric">Mar 2023 – Present</span> · Ottawa</p><ul><li><span class="highlight">Sustainability recommender</span> — optimized PSU utilization across enterprise hardware</li><li>Network automation for IOS-XE — <span class="metric">40% latency reduction</span></li><li>Diagnostic engine for Catalyst 9K — auto security hardening</li><li><span class="metric">2 invention disclosures</span> (1 patent filed)</li></ul>`,
+      tyco: `<h3>📊 Tyco Safety Products — Data Scientist, IoT</h3><p><span class="metric">Jun 2022 – Feb 2023</span> · Toronto</p><ul><li><span class="highlight">Python + PostgreSQL</span> pipelines for real-time edge analytics</li><li>Analyzed <span class="metric">50GB+</span> IoT telemetry with Pandas & BigQuery</li></ul>`,
+      johnson: `<h3>⚡ Johnson Controls — Controls Systems Engineer</h3><p><span class="metric">Jul 2016 – Sep 2021</span> · New York</p><ul><li><span class="highlight">Invented Digital Integration Module</span> — <span class="metric">patent filed</span></li><li>R2R bridge — <span class="metric">70% wiring cost reduction</span></li><li><span class="metric">100+</span> peripheral points over <span class="metric">3-wire</span> cable</li></ul>`,
+      skills: `<h3>🛠 Skills</h3><p><span class="tag tag-blue">Python</span><span class="tag tag-blue">Bash</span><span class="tag tag-blue">SQL</span><span class="tag tag-green">Docker</span><span class="tag tag-green">Kubernetes</span><span class="tag tag-green">AWS</span><span class="tag tag-green">PostgreSQL</span><span class="tag tag-green">CI/CD</span><span class="tag tag-purple">Linux</span><span class="tag tag-purple">Arduino</span><span class="tag tag-purple">Raspberry Pi</span><span class="tag tag-purple">ESP32</span><span class="tag tag-green">UART</span><span class="tag tag-green">I²C</span><span class="tag tag-green">SPI</span><span class="tag tag-blue">MATLAB</span><span class="tag tag-blue">Cadence</span></p><p style="margin-top:0.8rem;color:var(--muted)"><span class="highlight">Hardware registers → cloud containers.</span></p>`,
+      education: `<h3>🎓 Education</h3><ul><li><span class="highlight">M.Eng Systems Design — AI & ML</span><br><span style="color:var(--subtle)">UWaterloo, 2022</span></li><li><span class="highlight">B.Tech Electronics & Instrumentation</span><br><span style="color:var(--subtle)">VIT, 2016</span></li></ul>`,
+      awards: `<h3>🏆 Leadership & Awards</h3><ul><li><span class="highlight">Founder & Captain — Formula Student Team</span> (25 members, Best Innovation)</li><li><span class="highlight">Winner — International Hackathon Uganda</span> (life-saving medical device)</li><li><span class="highlight">President — GSA</span>, SYDE, UWaterloo</li><li><span class="highlight">Dean's Award</span> — VIT</li></ul>`,
+      contact: `<h3>📬 Let's Connect</h3><p>Open to: <span class="highlight">software systems</span>, <span class="highlight">HW-SW integration</span>, <span class="highlight">AI/ML</span>.</p><p>📧 <a href="mailto:ronnitburman@gmail.com">ronnitburman@gmail.com</a><br>📞 (437) 988-2357<br>🔗 <a href="https://linkedin.com/in/ronnitburman" target="_blank">LinkedIn</a> · <a href="https://github.com/ronnitburman" target="_blank">GitHub</a></p>`
     };
 
-    // Follow-up suggestions per topic
     const followUps = {
-      overview: [
-        { label: '🔧 Cisco Experience', prompt: 'cisco' },
-        { label: '🛠 Skills', prompt: 'skills' },
-        { label: '🏆 Awards', prompt: 'awards' }
-      ],
-      cisco: [
-        { label: '📊 Tyco (IoT)', prompt: 'tyco' },
-        { label: '⚡ Johnson Controls', prompt: 'johnson' },
-        { label: '🛠 Skills', prompt: 'skills' }
-      ],
-      tyco: [
-        { label: '🔧 Cisco', prompt: 'cisco' },
-        { label: '⚡ Johnson Controls', prompt: 'johnson' },
-        { label: '🎓 Education', prompt: 'education' }
-      ],
-      johnson: [
-        { label: '🔧 Cisco', prompt: 'cisco' },
-        { label: '📊 Tyco (IoT)', prompt: 'tyco' },
-        { label: '🏆 Awards', prompt: 'awards' }
-      ],
-      skills: [
-        { label: '🔧 Cisco Experience', prompt: 'cisco' },
-        { label: '🏆 Awards', prompt: 'awards' },
-        { label: '📬 Contact', prompt: 'contact' }
-      ],
-      awards: [
-        { label: '🎓 Education', prompt: 'education' },
-        { label: '🛠 Skills', prompt: 'skills' },
-        { label: '📬 Contact', prompt: 'contact' }
-      ],
-      education: [
-        { label: '🛠 Skills', prompt: 'skills' },
-        { label: '🔧 Cisco Experience', prompt: 'cisco' }
-      ],
-      contact: [
-        { label: '👋 Overview', prompt: 'overview' },
-        { label: '🛠 Skills', prompt: 'skills' }
-      ]
+      overview:[{label:'🔧 Cisco',prompt:'cisco'},{label:'🛠 Skills',prompt:'skills'},{label:'🏆 Awards',prompt:'awards'}],
+      cisco:[{label:'📊 Tyco',prompt:'tyco'},{label:'⚡ Johnson Controls',prompt:'johnson'},{label:'🛠 Skills',prompt:'skills'}],
+      tyco:[{label:'🔧 Cisco',prompt:'cisco'},{label:'⚡ Johnson Controls',prompt:'johnson'}],
+      johnson:[{label:'🔧 Cisco',prompt:'cisco'},{label:'🏆 Awards',prompt:'awards'}],
+      skills:[{label:'🔧 Cisco',prompt:'cisco'},{label:'🏆 Awards',prompt:'awards'}],
+      awards:[{label:'🎓 Education',prompt:'education'},{label:'🛠 Skills',prompt:'skills'}],
+      education:[{label:'🛠 Skills',prompt:'skills'},{label:'🔧 Cisco',prompt:'cisco'}],
+      contact:[{label:'👋 Overview',prompt:'overview'},{label:'🛠 Skills',prompt:'skills'}]
     };
 
-    function addMessage(role, html) {
+    function addMsg(role, html) {
       const div = document.createElement('div');
       div.className = `msg msg-${role}`;
-      const avatar = role === 'user' ? '👤' : '📄';
-      div.innerHTML = `<div class="msg-avatar">${avatar}</div><div class="msg-body">${html}</div>`;
+      const av = role === 'user' ? '👤' : '📄';
+      div.innerHTML = `<div class="msg-avatar">${av}</div><div class="msg-body">${html}</div>`;
       messages.appendChild(div);
       messages.scrollTop = messages.scrollHeight;
       return div;
@@ -307,10 +276,9 @@
       const div = document.createElement('div');
       div.className = 'msg msg-assistant';
       div.id = 'typing-msg';
-      div.innerHTML = `<div class="msg-avatar">📄</div><div class="msg-body"><div class="typing-indicator"><span></span><span></span><span></span></div></div>`;
+      div.innerHTML = `<div class="msg-avatar">📄</div><div class="msg-body"><div class="typing"><span></span><span></span><span></span></div></div>`;
       messages.appendChild(div);
       messages.scrollTop = messages.scrollHeight;
-      return div;
     }
 
     function removeTyping() {
@@ -320,31 +288,67 @@
 
     function addFollowUps(key) {
       const chips = followUps[key];
-      if (!chips) return;
+      if (!chips || currentMode !== 'guided') return;
       const div = document.createElement('div');
       div.className = 'msg msg-assistant';
       div.style.marginTop = '-0.5rem';
-      div.innerHTML = `<div class="msg-avatar"></div><div class="msg-body" style="display:flex;gap:0.4rem;flex-wrap:wrap">${chips.map(c => `<button class="prompt-chip" onclick="ask('${c.prompt}')">${c.label}</button>`).join('')}</div>`;
+      div.innerHTML = `<div class="msg-avatar"></div><div class="msg-body" style="display:flex;gap:0.4rem;flex-wrap:wrap">${chips.map(c => `<button class="prompt-chip" onclick="askGuided('${c.prompt}')">${c.label}</button>`).join('')}</div>`;
       messages.appendChild(div);
-      messages.scrollTop = messages.scrollHeight;
     }
 
-    function respond(key, userText) {
-      if (userText) addMessage('user', `<p>${userText}</p>`);
+    function askGuided(key) {
       addTyping();
       setTimeout(() => {
         removeTyping();
-        addMessage('assistant', responses[key].text);
+        addMsg('assistant', responses[key]);
         addFollowUps(key);
-        // Highlight active chip
         document.querySelectorAll('.prompt-chip').forEach(c => c.classList.remove('active'));
         const chip = document.querySelector(`[data-prompt="${key}"]`);
         if (chip) chip.classList.add('active');
-      }, 600 + Math.random() * 600);
+      }, 400 + Math.random() * 400);
     }
 
-    function ask(key) {
-      respond(key);
+    // ── AI Chat ──
+    async function askAI(userText) {
+      addMsg('user', `<p>${escapeHtml(userText)}</p>`);
+      addTyping();
+      sendBtn.disabled = true;
+
+      try {
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${groqKey}` },
+          body: JSON.stringify({
+            model: 'llama-3.1-8b-instant',
+            messages: [
+              { role: 'system', content: RESUME },
+              { role: 'user', content: userText }
+            ],
+            max_tokens: 500,
+            temperature: 0.7
+          })
+        });
+
+        if (!res.ok) {
+          if (res.status === 401) throw new Error('invalid_key');
+          throw new Error(`API error: ${res.status}`);
+        }
+
+        const data = await res.json();
+        const reply = data.choices[0].message.content;
+        removeTyping();
+        addMsg('assistant', `<p>${escapeHtml(reply).replace(/\n/g, '<br>')}</p>`);
+      } catch (e) {
+        removeTyping();
+        if (e.message === 'invalid_key') {
+          addMsg('assistant', `<p>⚠️ Invalid API key. <a href="#" onclick="event.preventDefault();showKeyModal()">Update your Groq key</a> or switch to guided mode.</p>`);
+          localStorage.removeItem('groq_key');
+          groqKey = '';
+        } else {
+          addMsg('assistant', `<p>⚠️ Couldn't reach the AI. Check your connection or switch to guided mode.</p>`);
+        }
+      }
+      sendBtn.disabled = false;
     }
 
     function sendMsg() {
@@ -352,28 +356,71 @@
       if (!text) return;
       msgInput.value = '';
 
-      // Simple keyword matching
-      const t = text.toLowerCase();
-      if (t.includes('cisco') || t.includes('network') || t.includes('ios-xe')) respond('cisco', text);
-      else if (t.includes('tyco') || t.includes('iot') || t.includes('data sci') || t.includes('pipeline')) respond('tyco', text);
-      else if (t.includes('johnson') || t.includes('control') || t.includes('wiring') || t.includes('patent')) respond('johnson', text);
-      else if (t.includes('skill') || t.includes('tech') || t.includes('stack') || t.includes('tool')) respond('skills', text);
-      else if (t.includes('award') || t.includes('leader') || t.includes('formula') || t.includes('hackathon')) respond('awards', text);
-      else if (t.includes('education') || t.includes('school') || t.includes('degree') || t.includes('waterloo')) respond('education', text);
-      else if (t.includes('contact') || t.includes('email') || t.includes('hire') || t.includes('connect')) respond('contact', text);
-      else respond('overview', text);
+      if (currentMode === 'ai') {
+        if (!groqKey) { showKeyModal(); return; }
+        askAI(text);
+      } else {
+        const t = text.toLowerCase();
+        let key = 'overview';
+        if (t.includes('cisco')||t.includes('network')||t.includes('ios')) key='cisco';
+        else if (t.includes('tyco')||t.includes('iot')||t.includes('data')) key='tyco';
+        else if (t.includes('johnson')||t.includes('control')||t.includes('patent')||t.includes('wiring')) key='johnson';
+        else if (t.includes('skill')||t.includes('tech')||t.includes('tool')||t.includes('stack')) key='skills';
+        else if (t.includes('award')||t.includes('leader')||t.includes('formula')||t.includes('hackathon')) key='awards';
+        else if (t.includes('education')||t.includes('school')||t.includes('degree')) key='education';
+        else if (t.includes('contact')||t.includes('email')||t.includes('hire')) key='contact';
+        addMsg('user', `<p>${escapeHtml(text)}</p>`);
+        askGuided(key);
+      }
     }
+
+    function switchMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+      headerTitle.textContent = mode === 'ai' ? "Ronnit's AI" : "Ronnit's Resume";
+      msgInput.placeholder = mode === 'ai' ? 'Ask me anything...' : 'Ask about my experience, skills, or anything...';
+      promptsEl.style.display = mode === 'guided' ? 'flex' : 'none';
+    }
+
+    function showKeyModal() { keyModal.style.display = 'flex'; document.getElementById('apiKeyInput').focus(); }
+
+    function saveKey() {
+      const key = document.getElementById('apiKeyInput').value.trim();
+      if (!key.startsWith('gsk_')) { alert('Please enter a valid Groq API key (starts with gsk_)'); return; }
+      groqKey = key;
+      localStorage.setItem('groq_key', key);
+      keyModal.style.display = 'none';
+      switchMode('ai');
+      addMsg('assistant', `<p>🤖 Hey! I'm Ronnit's AI. Ask me anything — about my experience, skills, projects, or what I'm looking for next. I'll answer in first person based on my resume.</p>`);
+    }
+
+    function escapeHtml(s) {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    // Mode toggle
+    document.querySelectorAll('.mode-btn').forEach(b => b.addEventListener('click', () => {
+      const mode = b.dataset.mode;
+      if (mode === 'ai' && !groqKey) { showKeyModal(); return; }
+      switchMode(mode);
+      if (mode === 'ai') {
+        addMsg('assistant', `<p>🤖 Hey! I'm Ronnit's AI. Ask me anything — about my experience, skills, projects, or what I'm looking for next.</p>`);
+      }
+    }));
 
     // Prompt chips
     document.querySelectorAll('.prompt-chip').forEach(chip => {
-      chip.addEventListener('click', () => ask(chip.dataset.prompt));
+      chip.addEventListener('click', () => askGuided(chip.dataset.prompt));
     });
 
-    // Start with overview
-    ask('overview');
-
-    // Focus input
+    // Start
+    askGuided('overview');
     msgInput.focus();
+
+    // Send button
+    document.getElementById('sendBtn').addEventListener('click', sendMsg);
   </script>
 </body>
 </html>
